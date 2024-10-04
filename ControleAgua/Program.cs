@@ -11,6 +11,9 @@
 // | 1  | 1  | 0  | 1  | 1  | 0  |
 // | 1  | 1  | 1  | 0  | 1  | 0  |
 
+bool rodarTeste = true, boiaA, boiaB, boiaC, bomba, valvula, erro;
+string escolhaUsuario;
+
 void EscreverTitulo()
 {
     Console.Clear();
@@ -21,92 +24,92 @@ void EscreverTitulo()
     Console.ResetColor();
 }
 
-inicio:
-
-bool boiaA = false,
-     boiaB = false,
-     boiaC = false,
-     bomba = false,
-     valvula = false,
-     erro = false;
-
-EscreverTitulo();
-
-// Leitura do estado das boias
-Console.WriteLine("\nInforme o estado das boias (0 para \u001b[91mNÃO ACIONADA\u001b[0m, 1 para \u001b[92mACIONADA\u001b[0m):");
-
-Console.Write("> \u001b[36mBoia A\u001b[0m [Reservatório 1 – Nível 1]: ");
-boiaA = int.Parse(Console.ReadLine()) == 1;
-
-Console.Write("> \u001b[36mBoia B\u001b[0m [Reservatório 1 – Nível 2]: ");
-boiaB = int.Parse(Console.ReadLine()) == 1;
-
-Console.Write("> \u001b[36mBoia C\u001b[0m [Reservatório 2 – Nível 3]: ");
-boiaC = int.Parse(Console.ReadLine()) == 1;
-
-// Lógica para controle da bomba e da válvula com base no nível das boias
-if (!boiaA && !boiaB && !boiaC) // Reservatórios vazios, tudo off
+bool LerEstadoBoia(string boia)
 {
-    erro = false;
-    bomba = false;
-    valvula = false;
-}
-else if (boiaA && !boiaB && !boiaC)
-{
-    erro = false;
-    bomba = true; // Liga a bomba
-    valvula = false;
-}
-else if (boiaA && boiaB && !boiaC)
-{
-    erro = false;
-    bomba = true; // Continua bombeando
-    valvula = true; // Abre a válvula
-}
-else if (boiaA && boiaB && boiaC)
-{
-    erro = false;
-    bomba = false; // Desliga a bomba
-    valvula = true; // Válvula segue aberta
-}
-else // Inconsistência detectada
-{
-    erro = true; // Sinaliza erro
-    bomba = false; // Desliga a bomba
-    valvula = false; // Fecha a válvula
+    while (true)
+    {
+        Console.Write($"> \u001b[36m{boia}\u001b[0m: ");
+        escolhaUsuario = Console.ReadLine().ToUpper();
+        if (escolhaUsuario == "0" || escolhaUsuario == "1")
+            return escolhaUsuario == "1";
+        else
+            Console.WriteLine("\u001b[91mEntrada inválida! Digite 0 ou 1.\u001b[0m");
+    }
 }
 
-EscreverTitulo();
-
-// Exibindo o status do sistema
-if (erro)
-{
-    Console.WriteLine("\n\u001b[91mERRO: Inconsistência detectada!");
-    Console.WriteLine("Travando a bomba e a válvula! Chame a manutenção!\u001b[0m");
-}
-else
-{
-    Console.WriteLine("\n\u001b[92mSistema operando corretamente.");
-    if (bomba)
-        Console.WriteLine("\u001b[36mBomba de água: \u001b[92mLIGADA");
-    else
-        Console.WriteLine("\u001b[36mBomba de água: \u001b[91mDESLIGADA");
-
-    if (valvula)
-        Console.WriteLine("\u001b[36mEletroválvula de entrada de água: \u001b[92mABERTA\u001b[0m");
-    else
-        Console.WriteLine("\u001b[36mEletroválvula de entrada de água: \u001b[91mFECHADA\u001b[0m");
-}
-
-Console.Write("\nDeseja fazer um novo teste? (S/N): ");
-string novoTeste = Console.ReadLine().ToUpper();
-if (novoTeste == "S")
-{
-    goto inicio;
-}
-else if (novoTeste == "N")
+while (rodarTeste)
 {
     EscreverTitulo();
-    Console.WriteLine("\nSaindo...");
-    return;
+
+    // Leitura do estado das boias
+    Console.WriteLine("\nInforme o estado das boias (0 para \u001b[91mNÃO ACIONADA\u001b[0m, 1 para \u001b[92mACIONADA\u001b[0m):");
+
+    boiaA = LerEstadoBoia("Boia A [Reservatório 1 – Nível 1]");
+    boiaB = LerEstadoBoia("Boia B [Reservatório 1 – Nível 2]");
+    boiaC = LerEstadoBoia("Boia C [Reservatório 2 – Nível 3]");
+
+    // Lógica para controle da bomba e da válvula com base no nível das boias
+    if (!boiaA && !boiaB && !boiaC) // Reservatórios vazios, tudo off
+    {
+        erro = false;
+        bomba = false;
+        valvula = false;
+    }
+    else if (boiaA && !boiaB && !boiaC)
+    {
+        erro = false;
+        bomba = true; // Liga a bomba
+        valvula = false;
+    }
+    else if (boiaA && boiaB && !boiaC)
+    {
+        erro = false;
+        bomba = true; // Continua bombeando
+        valvula = true; // Abre a válvula
+    }
+    else if (boiaA && boiaB && boiaC)
+    {
+        erro = false;
+        bomba = false; // Desliga a bomba
+        valvula = true; // Válvula segue aberta
+    }
+    else // Inconsistência detectada
+    {
+        erro = true; // Sinaliza erro
+        bomba = false; // Desliga a bomba
+        valvula = false; // Fecha a válvula
+    }
+
+    EscreverTitulo();
+
+    // Exibindo o status do sistema
+    if (erro)
+    {
+        Console.WriteLine("\n\u001b[91mERRO: Inconsistência detectada!");
+        Console.WriteLine("Travando a bomba e a válvula! Chame a manutenção!\u001b[0m\n");
+    }
+    else
+    {
+        Console.WriteLine("\n\u001b[92mSistema operando corretamente.");
+        Console.WriteLine($"\u001b[36mBomba de água: {(bomba ? "\u001b[92mLIGADA" : "\u001b[91mDESLIGADA")}");
+        Console.WriteLine($"\u001b[36mEletroválvula de entrada de água: {(valvula ? "\u001b[92mABERTA" : "\u001b[91mFECHADA")}\u001b[0m\n");
+    }
+
+    while (true)
+    {
+        Console.Write("Deseja fazer um novo teste? (S/N): ");
+        escolhaUsuario = Console.ReadLine().ToUpper();
+        if (escolhaUsuario == "S" || escolhaUsuario == "N")
+            break;
+        else
+            Console.WriteLine("\u001b[91mOpção inválida! Digite S ou N.\u001b[0m");
+    }
+
+    if (escolhaUsuario == "N")
+    {
+        rodarTeste = false;
+    }
 }
+
+EscreverTitulo();
+Console.WriteLine("\nSaindo...");
